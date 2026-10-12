@@ -17848,6 +17848,66 @@
   },
   {
     "site": "jd",
+    "name": "pending-reviews",
+    "description": "京东待评价订单（每件商品一行，每页 20 个订单）",
+    "access": "read",
+    "example": "opencli jd pending-reviews -f json",
+    "domain": "club.jd.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "page",
+        "type": "int",
+        "default": 1,
+        "required": false,
+        "help": "页码"
+      }
+    ],
+    "columns": [
+      "orderId",
+      "orderedAt",
+      "product",
+      "quantity",
+      "pendingOrders"
+    ],
+    "type": "js",
+    "modulePath": "jd/pending-reviews.js",
+    "sourceFile": "jd/pending-reviews.js",
+    "navigateBefore": false
+  },
+  {
+    "site": "jd",
+    "name": "review-form",
+    "description": "京东某个订单评价表单里待评价的商品（含商品编号）",
+    "access": "read",
+    "example": "opencli jd review-form 123456789012 -f json",
+    "domain": "club.jd.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "order",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "订单号"
+      }
+    ],
+    "columns": [
+      "orderId",
+      "sku",
+      "product",
+      "requiresTags",
+      "anonymousByDefault"
+    ],
+    "type": "js",
+    "modulePath": "jd/review-form.js",
+    "sourceFile": "jd/review-form.js",
+    "navigateBefore": false
+  },
+  {
+    "site": "jd",
     "name": "reviews",
     "description": "京东商品评价",
     "access": "read",
@@ -17916,6 +17976,80 @@
     "type": "js",
     "modulePath": "jd/search.js",
     "sourceFile": "jd/search.js",
+    "navigateBefore": false
+  },
+  {
+    "site": "jd",
+    "name": "submit-review",
+    "description": "提交一条京东商品评价；不带 --confirm 只预演，不发请求",
+    "access": "write",
+    "example": "opencli jd submit-review 123456789012 --score 5 --content \"质量不错\" --confirm",
+    "domain": "club.jd.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "order",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "订单号"
+      },
+      {
+        "name": "score",
+        "type": "int",
+        "required": true,
+        "help": "评分 1–5"
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "help": "评价内容（约 500 个汉字以内）"
+      },
+      {
+        "name": "sku",
+        "type": "string",
+        "default": "",
+        "required": false,
+        "help": "商品编号；订单里只有一件待评价商品时可省略"
+      },
+      {
+        "name": "images",
+        "type": "string",
+        "default": "",
+        "required": false,
+        "help": "晒图：本地图片路径，逗号分隔，最多 9 张（jpg/png/gif/bmp，单张不超过 4MB）"
+      },
+      {
+        "name": "public",
+        "type": "bool",
+        "default": false,
+        "required": false,
+        "help": "公开昵称评价（默认匿名，与页面默认一致）"
+      },
+      {
+        "name": "confirm",
+        "type": "bool",
+        "default": false,
+        "required": false,
+        "help": "真正提交；缺省为预演"
+      }
+    ],
+    "columns": [
+      "status",
+      "orderId",
+      "sku",
+      "product",
+      "score",
+      "anonymous",
+      "content",
+      "images",
+      "verified"
+    ],
+    "type": "js",
+    "modulePath": "jd/submit-review.js",
+    "sourceFile": "jd/submit-review.js",
     "navigateBefore": false
   },
   {
