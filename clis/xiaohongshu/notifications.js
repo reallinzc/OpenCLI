@@ -21,6 +21,9 @@ export function buildNotificationsPipeline(webHost) {
                 content: '${{ item.comment_info.content }}',
                 note: '${{ item.item_info.content }}',
                 time: '${{ item.time }}',
+                user_id: '${{ item.user_info.userid }}',
+                comment_id: '${{ item.comment_info.id }}',
+                note_id: '${{ item.item_info.id }}',
             } },
         { limit: '${{ args.limit | default(20) }}' },
     ];
@@ -41,6 +44,6 @@ export const command = cli({
         },
         { name: 'limit', type: 'int', default: 20, help: 'Number of notifications to return' },
     ],
-    columns: ['rank', 'user', 'action', 'content', 'note', 'time'],
+    columns: ['rank', 'user', 'action', 'content', 'note', 'time', 'user_id', 'comment_id', 'note_id'],
     pipeline: buildNotificationsPipeline('www.xiaohongshu.com'),
 });

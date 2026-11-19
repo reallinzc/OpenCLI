@@ -41779,6 +41779,105 @@
   },
   {
     "site": "xiaohongshu",
+    "name": "comment-like",
+    "description": "给小红书评论点赞（--undo 取消；需 --execute 才会真的发出）",
+    "access": "write",
+    "domain": "www.xiaohongshu.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "note",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Full note URL with xsec_token, or note id"
+      },
+      {
+        "name": "comment",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Comment id"
+      },
+      {
+        "name": "undo",
+        "type": "boolean",
+        "default": false,
+        "required": false,
+        "help": "Remove the like instead"
+      },
+      {
+        "name": "execute",
+        "type": "boolean",
+        "required": false,
+        "help": "Actually send it"
+      }
+    ],
+    "columns": [
+      "status",
+      "action",
+      "comment_id",
+      "note_id"
+    ],
+    "type": "js",
+    "modulePath": "xiaohongshu/comment-like.js",
+    "sourceFile": "xiaohongshu/comment-like.js",
+    "navigateBefore": false
+  },
+  {
+    "site": "xiaohongshu",
+    "name": "comment-list",
+    "description": "小红书笔记的完整评论树（含评论 ID、楼中楼、回复对象；自己的笔记标出是否已回复）",
+    "access": "read",
+    "domain": "www.xiaohongshu.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "note",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Full note URL with xsec_token"
+      },
+      {
+        "name": "limit",
+        "type": "int",
+        "default": 200,
+        "required": false,
+        "help": "Max top-level comments to read"
+      },
+      {
+        "name": "unreplied",
+        "type": "boolean",
+        "default": false,
+        "required": false,
+        "help": "Only rows you have not answered yet"
+      }
+    ],
+    "columns": [
+      "comment_id",
+      "root_id",
+      "author",
+      "text",
+      "reply_to_user",
+      "likes",
+      "replies",
+      "time",
+      "ip",
+      "replied",
+      "is_author",
+      "user_id",
+      "reply_to_id"
+    ],
+    "type": "js",
+    "modulePath": "xiaohongshu/comment-like.js",
+    "sourceFile": "xiaohongshu/comment-like.js",
+    "navigateBefore": false
+  },
+  {
+    "site": "xiaohongshu",
     "name": "comments",
     "description": "获取小红书笔记评论（支持楼中楼子回复）",
     "access": "read",
@@ -42252,6 +42351,70 @@
   },
   {
     "site": "xiaohongshu",
+    "name": "inbox",
+    "description": "小红书“评论和@”待办：谁在哪篇笔记说了什么、评论 ID、带签名的笔记链接、是否已回复（默认只列未回复）",
+    "access": "read",
+    "domain": "www.xiaohongshu.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "limit",
+        "type": "int",
+        "default": 50,
+        "required": false,
+        "help": "Max notifications to scan"
+      },
+      {
+        "name": "days",
+        "type": "int",
+        "default": 14,
+        "required": false,
+        "help": "Only notifications from the last N days (0 = no cut-off)"
+      },
+      {
+        "name": "all",
+        "type": "boolean",
+        "default": false,
+        "required": false,
+        "help": "Include items you already answered"
+      },
+      {
+        "name": "max-notes",
+        "type": "int",
+        "default": 20,
+        "required": false,
+        "help": "Max distinct notes whose threads are read"
+      },
+      {
+        "name": "exclude",
+        "type": "str",
+        "required": false,
+        "help": "Drop items whose text matches this regex, e.g. \"求内测|蹲\""
+      }
+    ],
+    "columns": [
+      "rank",
+      "time",
+      "kind",
+      "user",
+      "text",
+      "note",
+      "replied",
+      "comment_id",
+      "note_url",
+      "reply_to_text",
+      "user_id",
+      "note_id",
+      "root_id"
+    ],
+    "type": "js",
+    "modulePath": "xiaohongshu/inbox.js",
+    "sourceFile": "xiaohongshu/inbox.js",
+    "navigateBefore": false
+  },
+  {
+    "site": "xiaohongshu",
     "name": "liked",
     "description": "小红书赞过笔记列表",
     "access": "read",
@@ -42374,7 +42537,10 @@
       "action",
       "content",
       "note",
-      "time"
+      "time",
+      "user_id",
+      "comment_id",
+      "note_id"
     ],
     "type": "js",
     "modulePath": "xiaohongshu/notifications.js",
@@ -42442,6 +42608,108 @@
     "type": "js",
     "modulePath": "xiaohongshu/publish.js",
     "sourceFile": "xiaohongshu/publish.js",
+    "navigateBefore": false
+  },
+  {
+    "site": "xiaohongshu",
+    "name": "reply",
+    "description": "回复小红书笔记下的某条评论（楼中楼；不加 --execute 只核对目标、不发出）",
+    "access": "write",
+    "domain": "www.xiaohongshu.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "note",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Full note URL with xsec_token"
+      },
+      {
+        "name": "comment",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Comment id to reply to (from comment-list / inbox)"
+      },
+      {
+        "name": "text",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Reply text"
+      },
+      {
+        "name": "execute",
+        "type": "boolean",
+        "required": false,
+        "help": "Actually post the reply"
+      }
+    ],
+    "columns": [
+      "status",
+      "target_author",
+      "target_text",
+      "text",
+      "comment_id",
+      "target_id",
+      "note_id"
+    ],
+    "type": "js",
+    "modulePath": "xiaohongshu/reply.js",
+    "sourceFile": "xiaohongshu/reply.js",
+    "navigateBefore": false
+  },
+  {
+    "site": "xiaohongshu",
+    "name": "reply-batch",
+    "description": "按文件批量回复评论（JSON / JSONL：note_url、comment_id、text；每条间隔 30–60 秒，被拒即停）",
+    "access": "write",
+    "domain": "www.xiaohongshu.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "file",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "JSON array or JSONL of { note_url, comment_id, text }"
+      },
+      {
+        "name": "execute",
+        "type": "boolean",
+        "required": false,
+        "help": "Actually post the replies"
+      },
+      {
+        "name": "min-gap",
+        "type": "int",
+        "default": 30,
+        "required": false,
+        "help": "Min seconds between posts"
+      },
+      {
+        "name": "max-gap",
+        "type": "int",
+        "default": 60,
+        "required": false,
+        "help": "Max seconds between posts"
+      }
+    ],
+    "columns": [
+      "status",
+      "target_author",
+      "target_text",
+      "text",
+      "comment_id",
+      "target_id",
+      "note_id"
+    ],
+    "type": "js",
+    "modulePath": "xiaohongshu/reply.js",
+    "sourceFile": "xiaohongshu/reply.js",
     "navigateBefore": false
   },
   {

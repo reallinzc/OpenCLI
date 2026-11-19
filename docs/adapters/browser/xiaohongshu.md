@@ -20,6 +20,11 @@
 | `opencli xiaohongshu delete-note` | Verify or delete a published creator-center note by exact note ID |
 | `opencli xiaohongshu comment` | Post a top-level comment on a note through the page's own signed request layer (requires `--execute`) |
 | `opencli xiaohongshu comment-delete` | Delete one of your own comments on a note (requires `--execute`) |
+| `opencli xiaohongshu comment-list` | Full comment tree of a note via the signed comment APIs: every 楼中楼 thread, comment ids, reply targets, and on your own notes whether you already answered (`--unreplied`) |
+| `opencli xiaohongshu inbox` | The "评论和@" notifications as a work queue: comment id, signed note URL, and whether you answered (unanswered only by default; `--all`, `--days`, `--exclude <regex>`) |
+| `opencli xiaohongshu reply` | Reply under a specific comment by id (dry-run unless `--execute`; refuses ids not in the thread and identical repeat replies) |
+| `opencli xiaohongshu reply-batch` | Reply from a JSON / JSONL file of `{note_url, comment_id, text}`, 30–60 s apart, stopping at the first rejected write |
+| `opencli xiaohongshu comment-like` | Like (or `--undo`) a comment by id (requires `--execute`) |
 | `opencli xiaohongshu follow` | Follow a user from the profile UI and verify the button state flips |
 | `opencli xiaohongshu unfollow` | Unfollow a user from the profile UI, confirm the modal, and verify the button state flips |
 | `opencli xiaohongshu creator-notes` | Creator's note list with per-note metrics |
@@ -71,6 +76,13 @@ opencli xiaohongshu comment "https://www.xiaohongshu.com/explore/<id>?xsec_token
 # Delete one of your own comments, by the comment_id the post above printed
 opencli xiaohongshu comment-delete "https://www.xiaohongshu.com/explore/<id>?xsec_token=..." 6aa6bdb0000000000b0074cb --execute
 
+# Comment operations: find what still needs an answer, then answer it in place
+opencli xiaohongshu inbox --exclude '求内测|蹲' -f table
+opencli xiaohongshu comment-list "https://www.xiaohongshu.com/explore/<id>?xsec_token=..." --unreplied
+opencli xiaohongshu reply "<note_url from inbox>" <comment_id> "谢谢支持" --execute
+opencli xiaohongshu reply-batch replies.jsonl --execute
+opencli xiaohongshu comment-like "<note_url>" <comment_id> --execute
+
 # Follow / unfollow a profile
 opencli xiaohongshu follow 5d8f88dc0000000001005d3a
 opencli xiaohongshu unfollow https://www.xiaohongshu.com/user/profile/5d8f88dc0000000001005d3a
@@ -110,3 +122,5 @@ three stagnant scrolls, the time budget, or a limit-scaled scroll cap (6–100).
 If fewer notes are collected than requested, a warning identifies the stopping
 condition. Login walls and malformed snapshots remain errors even after some
 notes were collected. These changes were validated only with offline fixtures.
+
+> `comment-list`, `inbox`, `reply`, `reply-batch` and `comment-like` all run on `/notification` (one navigation) and call the web app's own bundled wrappers for `/api/sns/web/v2/comment/page`, `/v2/comment/sub/page`, `/v1/comment/post` (with `target_comment_id`), `/v1/comment/like|dislike` and `/v1/you/mentions`, located by endpoint string as above. Unlike `comments`, which scrolls the rendered page, `comment-list` pages through the APIs, so long threads are complete and every row has its id (on 2026-11-20 a launch post returned 34 rows where the DOM scrape saw 17 top-level comments). `replied` is true when you replied to that comment, or to a later comment by the same person in the same thread; your own and AI-agent (点点) comments are `null`. In `inbox`, `replied: null` means the comment is no longer in the thread (deleted or folded). `inbox` rows carry `note_url` signed with the notification's `xsec_token`, so they feed `reply` / `reply-batch` directly.
