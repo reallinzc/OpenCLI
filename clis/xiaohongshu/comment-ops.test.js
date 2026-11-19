@@ -141,10 +141,20 @@ describe('xiaohongshu reply', () => {
         fs.writeFileSync(file, [A3, A3].map(id => JSON.stringify({ note_url: NOTE_URL, comment_id: id, text: 'x' })).join('\n'));
         const page = makePage(threadWith(A3), { ok: true, comment_id: 'n1' }, threadWith('6aff0c00000000003003c9cc'), { ok: true, comment_id: 'n2' });
         fs.writeFileSync(file, [A3, '6aff0c00000000003003c9cc'].map(id => JSON.stringify({ note_url: NOTE_URL, comment_id: id, text: 'x' })).join('\n'));
-        const rows = await getRegistry().get('xiaohongshu/reply-batch').func(page, { file, execute: true, 'min-gap': 0, 'max-gap': 0 });
+        const rows = await getRegistry().get('xiaohongshu/reply-batch').func(page, { file, execute: true, 'min-gap': 0, 'max-gap': 0, timeout: 3600 });
         expect(rows.map(r => r.status)).toEqual(['success', 'success']);
         expect(page.goto).toHaveBeenCalledTimes(2);
         expect(page.wait.mock.invocationCallOrder[1]).toBeLessThan(page.goto.mock.invocationCallOrder[1]);
+    });
+
+    it('refuses a batch that cannot finish within --timeout, before touching the browser', async () => {
+        const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xhs-batch-'));
+        const file = path.join(dir, 'jobs.jsonl');
+        fs.writeFileSync(file, Array.from({ length: 5 }, () => JSON.stringify({ note_url: NOTE_URL, comment_id: A3, text: 'x' })).join('\n'));
+        const page = makePage();
+        await expect(getRegistry().get('xiaohongshu/reply-batch').func(page, { file, execute: true, 'max-gap': 60, timeout: 120 }))
+            .rejects.toThrow(/over --timeout/);
+        expect(page.goto).not.toHaveBeenCalled();
     });
 
     it('reads JSON and JSONL batch files', () => {

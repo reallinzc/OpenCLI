@@ -60,6 +60,7 @@ cli({
         { name: 'note', required: true, positional: true, help: 'Full note URL with xsec_token' },
         { name: 'limit', type: 'int', default: 200, help: 'Max top-level comments to read' },
         { name: 'unreplied', type: 'boolean', default: false, help: 'Only rows you have not answered yet' },
+        { name: 'timeout', type: 'int', default: 300, help: 'Time limit in seconds (long threads page slowly on purpose)' },
     ],
     columns: ['comment_id', 'root_id', 'author', 'text', 'reply_to_user', 'likes', 'replies', 'time', 'ip', 'replied', 'is_author', 'user_id', 'reply_to_id'],
     func: async (page, kwargs) => {

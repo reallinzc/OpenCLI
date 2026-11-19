@@ -66,6 +66,7 @@ cli({
         { name: 'all', type: 'boolean', default: false, help: 'Include items you already answered' },
         { name: 'max-notes', type: 'int', default: 20, help: 'Max distinct notes whose threads are read' },
         { name: 'exclude', help: 'Drop items whose text matches this regex, e.g. "求内测|蹲"' },
+        { name: 'timeout', type: 'int', default: 300, help: 'Time limit in seconds (long threads page slowly on purpose)' },
     ],
     columns: ['rank', 'time', 'kind', 'user', 'text', 'note', 'replied', 'comment_id', 'note_url', 'reply_to_text', 'user_id', 'note_id', 'root_id'],
     func: async (page, kwargs) => {

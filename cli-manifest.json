@@ -41854,6 +41854,13 @@
         "default": false,
         "required": false,
         "help": "Only rows you have not answered yet"
+      },
+      {
+        "name": "timeout",
+        "type": "int",
+        "default": 300,
+        "required": false,
+        "help": "Time limit in seconds (long threads page slowly on purpose)"
       }
     ],
     "columns": [
@@ -42391,6 +42398,13 @@
         "type": "str",
         "required": false,
         "help": "Drop items whose text matches this regex, e.g. \"求内测|蹲\""
+      },
+      {
+        "name": "timeout",
+        "type": "int",
+        "default": 300,
+        "required": false,
+        "help": "Time limit in seconds (long threads page slowly on purpose)"
       }
     ],
     "columns": [
@@ -42696,6 +42710,13 @@
         "default": 60,
         "required": false,
         "help": "Max seconds between posts"
+      },
+      {
+        "name": "timeout",
+        "type": "int",
+        "default": 3600,
+        "required": false,
+        "help": "Whole-batch time limit in seconds"
       }
     ],
     "columns": [

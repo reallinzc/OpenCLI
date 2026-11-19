@@ -17,7 +17,7 @@
  *     the API rejects (rate limiting tends to escalate if pushed).
  */
 import { cli, Strategy } from '@jackwener/opencli/registry';
-import { CommandExecutionError } from '@jackwener/opencli/errors';
+import { ArgumentError, CommandExecutionError } from '@jackwener/opencli/errors';
 import { API_PRELUDE_JS, ENDPOINTS, parseReplyJob, readReplyJobs, threadRows, writeSpacingSeconds, xsecTokenOf } from './comment-api.js';
 import { buildThreadScript, openXhsWorkspace, requireThread } from './comment-list.js';
 import { unwrapEvaluateResult } from './shared.js';
@@ -127,10 +127,18 @@ cli({
         { name: 'execute', type: 'boolean', help: 'Actually post the replies' },
         { name: 'min-gap', type: 'int', default: 30, help: 'Min seconds between posts' },
         { name: 'max-gap', type: 'int', default: 60, help: 'Max seconds between posts' },
+        { name: 'timeout', type: 'int', default: 3600, help: 'Whole-batch time limit in seconds' },
     ],
     columns: COLUMNS,
     func: async (page, kwargs) => {
         const jobs = readReplyJobs(kwargs.file);
+        // The CLI timeout races the adapter but cannot cancel it: a batch that
+        // outlives --timeout keeps posting with nobody reading its output
+        // (seen 2026-11-20). Refuse up front instead of starting one.
+        const worstCase = jobs.length * (Number(kwargs['max-gap'] ?? 60) + 25);
+        if (kwargs.execute && worstCase > Number(kwargs.timeout ?? 3600)) {
+            throw new ArgumentError(`xiaohongshu/reply-batch: ${jobs.length} replies may take ~${worstCase}s, over --timeout ${kwargs.timeout}; split the file or raise --timeout`);
+        }
         requireRuntime(page, 'reply-batch');
         await openXhsWorkspace(page);
         const out = [];
