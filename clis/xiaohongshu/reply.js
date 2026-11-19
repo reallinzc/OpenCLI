@@ -137,7 +137,12 @@ cli({
         let posted = 0;
         for (const job of jobs) {
             if (posted > 0 && kwargs.execute) {
-                await page.wait({ time: writeSpacingSeconds(Number(kwargs['min-gap']) || 30, Number(kwargs['max-gap']) || 60) });
+                await page.wait({ time: writeSpacingSeconds(Number(kwargs['min-gap'] ?? 30), Number(kwargs['max-gap'] ?? 60)) });
+                // The extension reclaims an adapter tab left idle for ~30 s, after
+                // which evaluate() fails with "stale page identity" (seen
+                // 2026-11-20). goto() re-resolves a live tab, so re-open the
+                // workspace after every pause.
+                await openXhsWorkspace(page);
             }
             let row;
             try {

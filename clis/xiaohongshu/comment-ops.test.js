@@ -135,6 +135,18 @@ describe('xiaohongshu reply', () => {
         expect(() => replyTest.parseReplyJob({ note: NOTE_URL, comment_id: A3, text: '  ' })).toThrow(/empty/);
     });
 
+    it('re-opens the workspace after each pause so an idle-reclaimed tab is replaced', async () => {
+        const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xhs-batch-'));
+        const file = path.join(dir, 'jobs.jsonl');
+        fs.writeFileSync(file, [A3, A3].map(id => JSON.stringify({ note_url: NOTE_URL, comment_id: id, text: 'x' })).join('\n'));
+        const page = makePage(threadWith(A3), { ok: true, comment_id: 'n1' }, threadWith('6aff0c00000000003003c9cc'), { ok: true, comment_id: 'n2' });
+        fs.writeFileSync(file, [A3, '6aff0c00000000003003c9cc'].map(id => JSON.stringify({ note_url: NOTE_URL, comment_id: id, text: 'x' })).join('\n'));
+        const rows = await getRegistry().get('xiaohongshu/reply-batch').func(page, { file, execute: true, 'min-gap': 0, 'max-gap': 0 });
+        expect(rows.map(r => r.status)).toEqual(['success', 'success']);
+        expect(page.goto).toHaveBeenCalledTimes(2);
+        expect(page.wait.mock.invocationCallOrder[1]).toBeLessThan(page.goto.mock.invocationCallOrder[1]);
+    });
+
     it('reads JSON and JSONL batch files', () => {
         const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'xhs-reply-'));
         const jsonl = path.join(dir, 'a.jsonl');
