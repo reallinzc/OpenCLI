@@ -2902,11 +2902,22 @@
     "columns": [
       "rank",
       "time",
+      "pub_ts",
       "author",
+      "mid",
       "title",
       "type",
+      "duration",
+      "duration_sec",
+      "plays",
+      "danmaku",
       "likes",
-      "url"
+      "url",
+      "bvid",
+      "cover",
+      "face",
+      "desc",
+      "only_fans"
     ],
     "type": "js",
     "modulePath": "bilibili/feed.js",
@@ -3195,8 +3206,19 @@
       "rank",
       "title",
       "author",
+      "mid",
       "score",
-      "url"
+      "plays",
+      "likes",
+      "danmaku",
+      "favorites",
+      "duration",
+      "duration_sec",
+      "pubdate_ts",
+      "url",
+      "cover",
+      "face",
+      "desc"
     ],
     "type": "js",
     "modulePath": "bilibili/search.js",
@@ -3236,7 +3258,9 @@
       "index",
       "from",
       "to",
-      "content"
+      "content",
+      "language",
+      "track_type"
     ],
     "type": "js",
     "modulePath": "bilibili/subtitle.js",
@@ -3340,8 +3364,18 @@
       "title",
       "plays",
       "likes",
+      "likes_known",
+      "comments",
+      "danmaku",
       "date",
-      "url"
+      "created_ts",
+      "duration",
+      "duration_sec",
+      "url",
+      "bvid",
+      "cover",
+      "desc",
+      "is_pay"
     ],
     "type": "js",
     "modulePath": "bilibili/user-videos.js",
@@ -5412,6 +5446,70 @@
   },
   {
     "site": "chatgpt",
+    "name": "ask-file",
+    "description": "Send a prompt to ChatGPT with attached local file(s) (images, documents, code) and return the assistant response",
+    "access": "write",
+    "domain": "chatgpt.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "prompt",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Prompt to send"
+      },
+      {
+        "name": "file",
+        "type": "str",
+        "required": true,
+        "help": "Local file path(s) to attach, comma-separated (e.g. \"screenshot.png,notes.txt\")"
+      },
+      {
+        "name": "timeout",
+        "type": "int",
+        "default": 120,
+        "required": false,
+        "help": "Max seconds to wait for response (default: 120)"
+      },
+      {
+        "name": "new",
+        "type": "boolean",
+        "default": false,
+        "required": false,
+        "help": "Start a new chat before sending"
+      },
+      {
+        "name": "conversation",
+        "type": "str",
+        "required": false,
+        "valueRequired": true,
+        "help": "Continue an existing ChatGPT conversation ID or /c/<id> URL"
+      },
+      {
+        "name": "project",
+        "type": "str",
+        "required": false,
+        "valueRequired": true,
+        "help": "Start a new chat inside a ChatGPT project ID or /g/g-p-<id> URL"
+      }
+    ],
+    "columns": [
+      "conversation_id",
+      "conversation_url",
+      "attachments",
+      "response"
+    ],
+    "defaultFormat": "plain",
+    "type": "js",
+    "modulePath": "chatgpt/ask-file.js",
+    "sourceFile": "chatgpt/ask-file.js",
+    "navigateBefore": false,
+    "siteSession": "persistent"
+  },
+  {
+    "site": "chatgpt",
     "name": "deep-research-result",
     "description": "Read a completed ChatGPT Deep Research report from the conversation payload",
     "access": "read",
@@ -7319,7 +7417,8 @@
     "type": "js",
     "modulePath": "ctrip/flight.js",
     "sourceFile": "ctrip/flight.js",
-    "navigateBefore": false
+    "navigateBefore": false,
+    "defaultWindowMode": "foreground"
   },
   {
     "site": "ctrip",
@@ -7763,7 +7862,7 @@
     "access": "read",
     "domain": "dblp.org",
     "strategy": "public",
-    "browser": false,
+    "browser": true,
     "args": [
       {
         "name": "author",
@@ -7800,7 +7899,8 @@
     ],
     "type": "js",
     "modulePath": "dblp/author.js",
-    "sourceFile": "dblp/author.js"
+    "sourceFile": "dblp/author.js",
+    "navigateBefore": false
   },
   {
     "site": "dblp",
@@ -7813,7 +7913,7 @@
     "access": "read",
     "domain": "dblp.org",
     "strategy": "public",
-    "browser": false,
+    "browser": true,
     "args": [
       {
         "name": "key",
@@ -7837,7 +7937,8 @@
     ],
     "type": "js",
     "modulePath": "dblp/paper.js",
-    "sourceFile": "dblp/paper.js"
+    "sourceFile": "dblp/paper.js",
+    "navigateBefore": false
   },
   {
     "site": "dblp",
@@ -7846,7 +7947,7 @@
     "access": "read",
     "domain": "dblp.org",
     "strategy": "public",
-    "browser": false,
+    "browser": true,
     "args": [
       {
         "name": "query",
@@ -7876,7 +7977,8 @@
     ],
     "type": "js",
     "modulePath": "dblp/search.js",
-    "sourceFile": "dblp/search.js"
+    "sourceFile": "dblp/search.js",
+    "navigateBefore": false
   },
   {
     "site": "dblp",
@@ -7885,7 +7987,7 @@
     "access": "read",
     "domain": "dblp.org",
     "strategy": "public",
-    "browser": false,
+    "browser": true,
     "args": [
       {
         "name": "query",
@@ -7911,7 +8013,8 @@
     ],
     "type": "js",
     "modulePath": "dblp/venue.js",
-    "sourceFile": "dblp/venue.js"
+    "sourceFile": "dblp/venue.js",
+    "navigateBefore": false
   },
   {
     "site": "deepseek",
@@ -7946,9 +8049,8 @@
       {
         "name": "model",
         "type": "str",
-        "default": "instant",
         "required": false,
-        "help": "Model to use: instant, expert, or vision",
+        "help": "Explicitly select a model; omitted uses the current DeepSeek model",
         "choices": [
           "instant",
           "expert",
@@ -9761,6 +9863,46 @@
     "sourceFile": "douyin/delete.js",
     "navigateBefore": "https://creator.douyin.com",
     "siteSession": "persistent"
+  },
+  {
+    "site": "douyin",
+    "name": "detail",
+    "description": "单条视频全解（短链/链接/ID → 文案、互动数据、作者、下载地址、图文图集）",
+    "access": "read",
+    "example": "opencli douyin detail \"https://v.douyin.com/xxxx/\" -f yaml",
+    "domain": "www.douyin.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "target",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "分享短链 / 视频链接 / 纯数字 ID"
+      }
+    ],
+    "columns": [
+      "aweme_id",
+      "desc",
+      "author",
+      "author_sec_uid",
+      "digg",
+      "comment",
+      "collect",
+      "share",
+      "created",
+      "duration_s",
+      "music",
+      "play_url",
+      "cover",
+      "images",
+      "share_url"
+    ],
+    "type": "js",
+    "modulePath": "douyin/detail.js",
+    "sourceFile": "douyin/detail.js",
+    "navigateBefore": "https://www.douyin.com"
   },
   {
     "site": "douyin",
@@ -17347,12 +17489,13 @@
       "following",
       "posts",
       "verified",
-      "bio"
+      "bio",
+      "avatar_url"
     ],
     "type": "js",
     "modulePath": "instagram/profile.js",
     "sourceFile": "instagram/profile.js",
-    "navigateBefore": "https://www.instagram.com"
+    "navigateBefore": false
   },
   {
     "site": "instagram",
@@ -17495,12 +17638,13 @@
       "name",
       "verified",
       "private",
-      "url"
+      "url",
+      "avatar_url"
     ],
     "type": "js",
     "modulePath": "instagram/search.js",
     "sourceFile": "instagram/search.js",
-    "navigateBefore": "https://www.instagram.com"
+    "navigateBefore": false
   },
   {
     "site": "instagram",
@@ -17665,7 +17809,7 @@
     "type": "js",
     "modulePath": "instagram/user.js",
     "sourceFile": "instagram/user.js",
-    "navigateBefore": "https://www.instagram.com"
+    "navigateBefore": false
   },
   {
     "site": "instagram",
@@ -26859,6 +27003,46 @@
     "sourceFile": "paperreview/submit.js"
   },
   {
+    "site": "pinduoduo",
+    "name": "search",
+    "description": "拼多多商品搜索（H5 首屏，需要登录态）",
+    "access": "read",
+    "domain": "mobile.yangkeduo.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "query",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "搜索关键词"
+      },
+      {
+        "name": "limit",
+        "type": "int",
+        "default": 10,
+        "required": false,
+        "help": "返回条数 (1-20，首屏上限)"
+      }
+    ],
+    "columns": [
+      "rank",
+      "title",
+      "price",
+      "price_label",
+      "group_price",
+      "sales",
+      "tags",
+      "goods_id",
+      "url"
+    ],
+    "type": "js",
+    "modulePath": "pinduoduo/search.js",
+    "sourceFile": "pinduoduo/search.js",
+    "navigateBefore": false
+  },
+  {
     "site": "pinterest",
     "name": "board-create",
     "description": "Create a new board on your account",
@@ -27819,7 +28003,7 @@
         "type": "str",
         "required": true,
         "positional": true,
-        "help": "Illustration ID"
+        "help": "Illustration ID or Pixiv artwork URL"
       },
       {
         "name": "output",
@@ -28459,6 +28643,118 @@
     "type": "js",
     "modulePath": "producthunt/today.js",
     "sourceFile": "producthunt/today.js"
+  },
+  {
+    "site": "proton",
+    "name": "inbox",
+    "description": "List sender-filtered inbox metadata via API; optionally read the newest message for a code",
+    "access": "read",
+    "example": "opencli proton inbox --from ifood --read-code -f json",
+    "domain": "mail.proton.me",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "from",
+        "type": "str",
+        "required": false,
+        "help": "Case-insensitive substring of the sender name or address"
+      },
+      {
+        "name": "limit",
+        "type": "int",
+        "default": 20,
+        "required": false,
+        "help": "Maximum matching messages (1..100)"
+      },
+      {
+        "name": "since",
+        "type": "int",
+        "default": 0,
+        "required": false,
+        "help": "Only messages at or after this Unix timestamp (seconds)"
+      },
+      {
+        "name": "read-code",
+        "type": "bool",
+        "default": false,
+        "required": false,
+        "help": "Open the newest match and extract a code; may mark that message read"
+      },
+      {
+        "name": "timeout",
+        "type": "int",
+        "default": 30,
+        "required": false,
+        "help": "Seconds to wait for selected message decryption (1..900)"
+      }
+    ],
+    "columns": [
+      "id",
+      "sender",
+      "subject",
+      "time",
+      "code"
+    ],
+    "type": "js",
+    "modulePath": "proton/inbox.js",
+    "sourceFile": "proton/inbox.js",
+    "navigateBefore": false,
+    "siteSession": "persistent"
+  },
+  {
+    "site": "proton",
+    "name": "login",
+    "description": "Open proton login and wait until the browser session is authenticated",
+    "access": "write",
+    "domain": "mail.proton.me",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "timeout",
+        "type": "int",
+        "default": 300,
+        "required": false,
+        "help": "Maximum seconds to wait for the user to finish login"
+      }
+    ],
+    "columns": [
+      "status",
+      "logged_in",
+      "site",
+      "id",
+      "username",
+      "email"
+    ],
+    "type": "js",
+    "modulePath": "proton/login.js",
+    "sourceFile": "proton/login.js",
+    "navigateBefore": false,
+    "siteSession": "persistent",
+    "defaultWindowMode": "foreground"
+  },
+  {
+    "site": "proton",
+    "name": "whoami",
+    "description": "Show the Proton account verified by the authenticated Mail API",
+    "access": "read",
+    "domain": "mail.proton.me",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [],
+    "columns": [
+      "logged_in",
+      "site",
+      "id",
+      "username",
+      "email"
+    ],
+    "type": "js",
+    "modulePath": "proton/whoami.js",
+    "sourceFile": "proton/whoami.js",
+    "navigateBefore": false,
+    "siteSession": "persistent"
   },
   {
     "site": "pubmed",
@@ -30082,6 +30378,13 @@
         "default": 2,
         "required": false,
         "help": "Max expansion passes when --expand-more is on (1–5; each round can fan out new \"more\" stubs)"
+      },
+      {
+        "name": "allow-partial",
+        "type": "bool",
+        "default": false,
+        "required": false,
+        "help": "With --expand-more: if Reddit denies /api/morechildren (HTTP 401/403, network-security block, or rate limit), keep the comments already loaded and append a NOTICE row instead of failing"
       }
     ],
     "columns": [
@@ -30199,7 +30502,7 @@
     "name": "search",
     "description": "Search Reddit Posts",
     "access": "read",
-    "domain": "reddit.com",
+    "domain": "www.reddit.com",
     "strategy": "cookie",
     "browser": true,
     "args": [
@@ -30257,7 +30560,7 @@
     "type": "js",
     "modulePath": "reddit/search.js",
     "sourceFile": "reddit/search.js",
-    "navigateBefore": "https://reddit.com"
+    "navigateBefore": false
   },
   {
     "site": "reddit",
@@ -35380,7 +35683,7 @@
   {
     "site": "tiktok",
     "name": "user",
-    "description": "Get recent videos from a TikTok user via page-context APIs",
+    "description": "Get recent videos from a TikTok user from page-rendered responses",
     "access": "read",
     "domain": "www.tiktok.com",
     "strategy": "cookie",
@@ -35419,7 +35722,7 @@
     "type": "js",
     "modulePath": "tiktok/user.js",
     "sourceFile": "tiktok/user.js",
-    "navigateBefore": "https://www.tiktok.com"
+    "navigateBefore": false
   },
   {
     "site": "tiktok",
@@ -36407,7 +36710,8 @@
       "url",
       "has_media",
       "media_urls",
-      "media_posters"
+      "media_posters",
+      "media_durations"
     ],
     "type": "js",
     "modulePath": "twitter/bookmark-folder.js",
@@ -36494,7 +36798,8 @@
       "url",
       "has_media",
       "media_urls",
-      "media_posters"
+      "media_posters",
+      "media_durations"
     ],
     "type": "js",
     "modulePath": "twitter/bookmarks.js",
@@ -36750,7 +37055,8 @@
     "columns": [
       "screen_name",
       "name",
-      "bio"
+      "bio",
+      "verified"
     ],
     "type": "js",
     "modulePath": "twitter/followers.js",
@@ -36785,7 +37091,8 @@
       "screen_name",
       "name",
       "bio",
-      "followers"
+      "followers",
+      "verified"
     ],
     "type": "js",
     "modulePath": "twitter/following.js",
@@ -36911,7 +37218,8 @@
       "url",
       "has_media",
       "media_urls",
-      "media_posters"
+      "media_posters",
+      "media_durations"
     ],
     "type": "js",
     "modulePath": "twitter/likes.js",
@@ -37092,6 +37400,43 @@
   },
   {
     "site": "twitter",
+    "name": "list-members",
+    "description": "List the member accounts of a Twitter/X list",
+    "access": "read",
+    "domain": "x.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "listId",
+        "type": "string",
+        "required": true,
+        "positional": true,
+        "help": "Numeric ID of a Twitter/X list (e.g. from `opencli twitter lists`)"
+      },
+      {
+        "name": "limit",
+        "type": "int",
+        "default": 100,
+        "required": false,
+        "help": "Maximum number of members to return (default 100). Must be a positive integer."
+      }
+    ],
+    "columns": [
+      "screen_name",
+      "name",
+      "bio",
+      "followers",
+      "verified",
+      "user_id"
+    ],
+    "type": "js",
+    "modulePath": "twitter/list-members.js",
+    "sourceFile": "twitter/list-members.js",
+    "navigateBefore": "https://x.com"
+  },
+  {
+    "site": "twitter",
     "name": "list-remove",
     "description": "Remove a user from a Twitter/X list you own (toggles via UI; no-op if not currently a member)",
     "access": "write",
@@ -37210,16 +37555,19 @@
     "columns": [
       "id",
       "author",
+      "author_avatar",
       "bio",
       "text",
       "likes",
       "retweets",
       "replies",
+      "views",
       "created_at",
       "url",
       "has_media",
       "media_urls",
       "media_posters",
+      "media_durations",
       "card",
       "quoted_tweet"
     ],
@@ -37670,17 +38018,22 @@
     "columns": [
       "id",
       "author",
+      "author_avatar",
       "bio",
       "text",
       "created_at",
       "likes",
+      "retweets",
+      "replies",
       "views",
       "url",
       "has_media",
       "media_urls",
       "media_posters",
+      "media_durations",
       "card",
-      "quoted_tweet"
+      "quoted_tweet",
+      "author_verified"
     ],
     "type": "js",
     "modulePath": "twitter/search.js",
@@ -37721,16 +38074,20 @@
     "columns": [
       "id",
       "author",
+      "author_avatar",
       "bio",
       "text",
       "likes",
       "retweets",
+      "views",
       "url",
       "has_media",
       "media_urls",
       "media_posters",
+      "media_durations",
       "card",
-      "quoted_tweet"
+      "quoted_tweet",
+      "author_verified"
     ],
     "type": "js",
     "modulePath": "twitter/thread.js",
@@ -37786,8 +38143,10 @@
       "has_media",
       "media_urls",
       "media_posters",
+      "media_durations",
       "card",
-      "quoted_tweet"
+      "quoted_tweet",
+      "author_verified"
     ],
     "type": "js",
     "modulePath": "twitter/timeline.js",
@@ -37873,6 +38232,7 @@
       "has_media",
       "media_urls",
       "media_posters",
+      "media_durations",
       "quoted_tweet"
     ],
     "type": "js",
@@ -39490,6 +39850,13 @@
         "default": true,
         "required": false,
         "help": "Download images locally"
+      },
+      {
+        "name": "verification-timeout",
+        "type": "int",
+        "default": 15,
+        "required": false,
+        "help": "Seconds to wait for the WeChat captcha to auto-resolve before failing (0 disables the wait)"
       }
     ],
     "columns": [
@@ -41329,6 +41696,89 @@
   },
   {
     "site": "xiaohongshu",
+    "name": "comment",
+    "description": "在小红书笔记下发表评论（走页面自带的已签名请求层，需 --execute 才会真的发出）",
+    "access": "write",
+    "domain": "www.xiaohongshu.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "note",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Full note URL with xsec_token (preferred), or a 24-char hex note ID"
+      },
+      {
+        "name": "text",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Comment text to post"
+      },
+      {
+        "name": "execute",
+        "type": "boolean",
+        "required": false,
+        "help": "Actually post the comment. Without it the command refuses to write."
+      }
+    ],
+    "columns": [
+      "status",
+      "comment_id",
+      "url",
+      "message",
+      "verified"
+    ],
+    "type": "js",
+    "modulePath": "xiaohongshu/comment.js",
+    "sourceFile": "xiaohongshu/comment.js",
+    "navigateBefore": false
+  },
+  {
+    "site": "xiaohongshu",
+    "name": "comment-delete",
+    "description": "删除自己在小红书笔记下的评论（走页面自带的已签名请求层，需 --execute 才会真的删除）",
+    "access": "write",
+    "domain": "www.xiaohongshu.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "note",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Full note URL with xsec_token (preferred), or a 24-char hex note ID"
+      },
+      {
+        "name": "comment-id",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "The comment ID to delete (as printed by `xiaohongshu comment`)"
+      },
+      {
+        "name": "execute",
+        "type": "boolean",
+        "required": false,
+        "help": "Actually delete the comment. Without it the command refuses to write."
+      }
+    ],
+    "columns": [
+      "status",
+      "comment_id",
+      "note_id",
+      "url"
+    ],
+    "type": "js",
+    "modulePath": "xiaohongshu/comment-delete.js",
+    "sourceFile": "xiaohongshu/comment-delete.js",
+    "navigateBefore": false
+  },
+  {
+    "site": "xiaohongshu",
     "name": "comments",
     "description": "获取小红书笔记评论（支持楼中楼子回复）",
     "access": "read",
@@ -42180,7 +42630,14 @@
         "type": "int",
         "default": 15,
         "required": false,
-        "help": "Number of notes to return"
+        "help": "Number of notes to return (1-1000)"
+      },
+      {
+        "name": "timeout",
+        "type": "int",
+        "default": 300,
+        "required": false,
+        "help": "Maximum loading time in seconds (1-1800)"
       }
     ],
     "columns": [
@@ -43608,7 +44065,7 @@
         "type": "str",
         "required": true,
         "positional": true,
-        "help": "Channel ID (UCxxxx) or handle (@name)"
+        "help": "Channel ID (UCxxxx) or handle (@name or name)"
       },
       {
         "name": "limit",
@@ -43626,6 +44083,48 @@
     "modulePath": "youtube/channel.js",
     "sourceFile": "youtube/channel.js",
     "navigateBefore": "https://www.youtube.com"
+  },
+  {
+    "site": "youtube",
+    "name": "comment",
+    "description": "Post a top-level comment on a YouTube video (requires --execute)",
+    "access": "write",
+    "domain": "www.youtube.com",
+    "strategy": "cookie",
+    "browser": true,
+    "args": [
+      {
+        "name": "url",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "YouTube video URL or video ID"
+      },
+      {
+        "name": "text",
+        "type": "str",
+        "required": true,
+        "positional": true,
+        "help": "Comment text to post"
+      },
+      {
+        "name": "execute",
+        "type": "boolean",
+        "required": false,
+        "help": "Actually post the comment. Without it the command refuses to write."
+      }
+    ],
+    "columns": [
+      "status",
+      "comment_id",
+      "url",
+      "message",
+      "verified"
+    ],
+    "type": "js",
+    "modulePath": "youtube/comment.js",
+    "sourceFile": "youtube/comment.js",
+    "navigateBefore": false
   },
   {
     "site": "youtube",
@@ -43685,6 +44184,7 @@
       "rank",
       "title",
       "channel",
+      "channel_avatar",
       "video_id",
       "views",
       "duration",
@@ -43869,6 +44369,8 @@
       "rank",
       "title",
       "channel",
+      "channel_avatar",
+      "video_id",
       "views",
       "duration",
       "published",
