@@ -25,6 +25,9 @@
 | `opencli xiaohongshu reply` | Reply under a specific comment by id (dry-run unless `--execute`; refuses ids not in the thread and identical repeat replies) |
 | `opencli xiaohongshu reply-batch` | Reply from a JSON / JSONL file of `{note_url, comment_id, text}`, 30–60 s apart, stopping at the first rejected write |
 | `opencli xiaohongshu comment-like` | Like (or `--undo`) a comment by id (requires `--execute`) |
+| `opencli xiaohongshu dm-list` | Private-message (私信) conversations: last message, who sent it (`last_from`), unread count, follow status, user id (`--waiting` keeps the ones waiting on you) |
+| `opencli xiaohongshu dm-read` | One conversation, oldest first (user id, profile URL or `/chat?openUid=` URL) |
+| `opencli xiaohongshu dm-send` | Send a private message by typing into the real chat box (requires `--execute`; same text is not re-sent; no second message to a stranger who has not answered) |
 | `opencli xiaohongshu follow` | Follow a user from the profile UI and verify the button state flips |
 | `opencli xiaohongshu unfollow` | Unfollow a user from the profile UI, confirm the modal, and verify the button state flips |
 | `opencli xiaohongshu creator-notes` | Creator's note list with per-note metrics |
@@ -82,6 +85,9 @@ opencli xiaohongshu comment-list "https://www.xiaohongshu.com/explore/<id>?xsec_
 opencli xiaohongshu reply "<note_url from inbox>" <comment_id> "谢谢支持" --execute
 opencli xiaohongshu reply-batch replies.jsonl --execute
 opencli xiaohongshu comment-like "<note_url>" <comment_id> --execute
+opencli xiaohongshu dm-list --waiting -f table
+opencli xiaohongshu dm-read <user_id>
+opencli xiaohongshu dm-send <user_id> "TestFlight 链接：https://testflight.apple.com/join/…" --execute
 
 # Follow / unfollow a profile
 opencli xiaohongshu follow 5d8f88dc0000000001005d3a
@@ -124,3 +130,5 @@ condition. Login walls and malformed snapshots remain errors even after some
 notes were collected. These changes were validated only with offline fixtures.
 
 > `comment-list`, `inbox`, `reply`, `reply-batch` and `comment-like` all run on `/notification` (one navigation) and call the web app's own bundled wrappers for `/api/sns/web/v2/comment/page`, `/v2/comment/sub/page`, `/v1/comment/post` (with `target_comment_id`), `/v1/comment/like|dislike` and `/v1/you/mentions`, located by endpoint string as above. Unlike `comments`, which scrolls the rendered page, `comment-list` pages through the APIs, so long threads are complete and every row has its id (on 2026-11-20 a launch post returned 34 rows where the DOM scrape saw 17 top-level comments). `replied` is true when you replied to that comment, or to a later comment by the same person in the same thread; your own and AI-agent (点点) comments are `null`. In `inbox`, `replied: null` means the comment is no longer in the thread (deleted or folded). `inbox` rows carry `note_url` signed with the notification's `xsec_token`, so they feed `reply` / `reply-batch` directly.
+
+> `dm-list` / `dm-read` / `dm-send` run on `/chat`. Reads call the web IM SDK singleton (the module that names `/api/im/web/v3/chats`; `getChatList`, `getChatInfoV3`, `getChatMessageHistory`, `getChatUnreadCounts`). Sending goes through a long-link socket with an HTTP fallback inside the chat view's own message model, so `dm-send` does not rebuild it: it opens `/chat?openUid=<user>`, checks the box is empty, types with CDP `Input.insertText` (Shift+Enter between lines), checks the box holds exactly the message, presses Enter once and reads the history back (`sent`, or `sent-unverified` — never retried). Before a stranger follows or answers, the account may send them only one message (the page says “对方关注或回复你之前，只能发送1条消息”, 2026-11-20); `dm-send` returns `stranger-limit` instead of trying a second one.
