@@ -86,6 +86,9 @@ cli({
     strategy: Strategy.COOKIE,
     navigateBefore: false,
     browser: true,
+    // CDP insertText / key events are refused on a hidden page ("Native input
+    // requires a visible browser page", seen 2026-11-20 on the first live send).
+    defaultWindowMode: 'foreground',
     args: [
         { name: 'user', required: true, positional: true, help: 'User id, profile URL or /chat?openUid= URL' },
         { name: 'text', required: true, positional: true, help: 'Message text (newlines become line breaks)' },

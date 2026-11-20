@@ -42242,7 +42242,8 @@
     "type": "js",
     "modulePath": "xiaohongshu/dm-send.js",
     "sourceFile": "xiaohongshu/dm-send.js",
-    "navigateBefore": false
+    "navigateBefore": false,
+    "defaultWindowMode": "foreground"
   },
   {
     "site": "xiaohongshu",
